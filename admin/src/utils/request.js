@@ -23,7 +23,7 @@ service.interceptors.request.use(
       // 请根据实际情况修改
       config.headers['Authorization'] = `Basic ${getToken()}`
     }
-    if (config.method === 'post' || config.method === 'put') { // 支持2种方法，默认使用Form Data
+    if (config.method === 'post' || config.method === 'put' || config.method === 'patch') { // 支持2种方法，默认使用Form Data
       // 如果useRequestBody=false, 默认支持Form Data
       if (!config.headers['Content-Type']) {
         config.data = qs.stringify(config.data)

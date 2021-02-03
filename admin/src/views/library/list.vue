@@ -5,64 +5,143 @@
         <el-input
           v-model.trim="keywords"
           size="small"
-          placeholder="请输入花样名称"
+          placeholder="请输入书本名称"
           clearable
           style="width:220px"
         />
-        <el-select v-if="roles==1" v-model="users_id" size="small" clearable placeholder="请选择设计师">
+        <!-- <el-select v-model="classId" size="small" clearable placeholder="请选择书本分类">
           <el-option
-            v-for="item in usersOptions"
-            :key="item.users_id"
-            :label="item.users_name"
-            :value="item.users_id"
+            v-for="item in libraryClass"
+            :key="item._id"
+            :label="item.class_name"
+            :value="item._id"
           />
-        </el-select>
+        </el-select> -->
         <el-button size="small" icon="el-icon-search" type="primary" @click="doSearch()">搜索</el-button>
       </div>
       <div class="operation">
-        <el-button size="small" icon="el-icon-upload" type="primary" @click="showDialog('add')">新增花样</el-button>
+        <el-button size="small" icon="el-icon-plus" type="primary" @click="showDialog('add')">新增花样</el-button>
       </div>
-
     </div>
     <div class="content">
-      <el-tabs v-model="activeName" v-loading="loading" type="card" @tab-click="handleClick">
-        <el-tab-pane
-          v-for="(item, index) in figureCount"
-          :key="index"
-          :label="`${item._status}(${item.count})`"
-          :name="`${item.status}`"
+      <el-table
+        v-loading="loading"
+        :data="list"
+        style="width: 100%"
+        fit
+        highlight-current-row
+        tooltip-effect="dark"
+      >
+        <el-table-column
+          label="序号"
+          align="center"
+          width="100"
+          type="index"
         />
-        <div class="tab-content">
-          <el-row class="figure-data" type="flex">
-            <el-col v-for="item in figureList" :key="item.design_id" class="list-item">
-              <el-card :body-style="{ padding: '0px' }" shadow="hover">
-                <!-- <img v-lazy="item.prev_png_path" :src="item.prev_png_path" class="image"> -->
-                <el-image :key="item.design_id" class="image" :src="item.prev_png_path" lazy />
-                <div style="padding: 14px; font-szie: 12px">
-                  <span>{{ item.design_name }}</span>
-                  <div class="bottom clearfix">
-                    <span style="color: #F56C6C">￥{{ item.price.toFixed(2) }}</span>
-                  </div>
-                  <div class="bottom clearfix">
-                    <time class="time">{{ item.created_at }}</time>
-                  </div>
-                  <div class="bottom clearfix">
-                    <el-button v-if="item.status!=3 && roles===1" type="text" class="button" @click.stop="editItem(item)">修改</el-button>
-                    <el-button v-if="item.status!=3 && roles===1" type="text" class="button" @click.stop="bindPrice(item)">标价</el-button>
-                    <el-button v-if="item.status!=3" type="text" style="color:#F56C6C" class="button" @click.stop="handleDelete(item.design_id)">删除</el-button>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
-        </div>
-      </el-tabs>
+        <el-table-column
+          label="封面图"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <img :src="scope.row.cover" width="50" alt="" style="display: inline-block;vertical-align: middle;">
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="书名"
+          align="center"
+        />
+        <el-table-column
+          label="所属分类"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.classId.class_name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="sort"
+          label="排序"
+          align="center"
+        />
+        <el-table-column
+          prop="pv"
+          label="浏览量"
+          align="center"
+        />
+        <el-table-column
+          label="书本状态"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-tag
+              :type="scope.row.status | statusFilter"
+            >
+              {{ scope.row.status==1?'已上架': scope.row.status==2?'已下架': '待审核' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          align="center"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.createTime | timeFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="updateTime"
+          label="更新时间"
+          align="center"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.updateTime | timeFormat }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          fixed="right"
+          label="操作"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click.native="seeDetail(scope.row)"
+            >查看章节</el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click.native="showDialog('edit', scope.row)"
+            >修改</el-button>
+            <el-button
+              v-if="scope.row.status==1"
+              type="danger"
+              size="mini"
+              @click.native="changeStatus(scope.row,2)"
+            >下架</el-button>
+            <el-button
+              v-if="scope.row.status==2"
+              type="success"
+              size="mini"
+              @click.native="changeStatus(scope.row,1)"
+            >上架</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <!-- 分页 -->
       <div class="pagination-box">
         <el-pagination
           :total="total"
           :current-page="currentPage"
-          :page-sizes="[10, 14,28]"
+          :page-sizes="[5, 10, 14,28]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="handleSizeChange"
@@ -71,49 +150,44 @@
       </div>
     </div>
     <!-- 新增花样弹框 -->
-    <el-dialog center :title="'新增花样'" :visible.sync="dialogFormVisible" width="25%">
-      <el-form ref="figureForm" :model="figureForm" :rules="rules" label-width="100px" label-position="left" size="small">
-        <el-form-item label="花样名称" prop="design_name">
-          <el-input v-model="figureForm.design_name " :disabled="dialogType=='detail'" />
+    <el-dialog center :title="'新增书本'" :visible.sync="dialogFormVisible" width="40%">
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        label-width="100px"
+        label-position="left"
+        size="small"
+      >
+        <el-form-item label="封面" prop="cover">
+          <el-input v-model="form.cover " :disabled="dialogType=='detail'" />
         </el-form-item>
-        <el-form-item label="选择文件" prop="design">
-          <el-upload
-            ref="upload"
-            name="design"
-            class="upload-demo"
-            action
-            :on-remove="handleRemove"
-            :on-change="fileChange"
-            multiple
-            :auto-upload="false"
-            :with-credentials="true"
-            :limit="1"
+        <el-form-item label="书本名称" prop="name">
+          <el-input v-model="form.name" :disabled="dialogType=='detail'" />
+        </el-form-item>
+        <el-form-item label="书本作者" prop="author">
+          <el-input v-model="form.author" :disabled="dialogType=='detail'" />
+        </el-form-item>
+        <el-form-item label="书本分类" prop="classId">
+          <el-select
+            v-model="form.classId"
+            placeholder="请选择分类"
+            clearable
           >
-            <el-button slot="trigger" size="small" type="primary">选取花样文件</el-button>
-          </el-upload>
+            <el-option
+              v-for="item in libraryClass"
+              :key="item._id"
+              :label="item.class_name"
+              :value="item._id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="书本描述" prop="description">
+          <el-input v-model="form.description" :disabled="dialogType=='detail'" />
         </el-form-item>
         <el-form-item>
-          <el-button v-if="dialogType!=='detail'" type="primary" @click="onSubmit('figureForm')">保存</el-button>
+          <el-button v-if="dialogType!=='detail'" type="primary" @click="onSubmit('form')">保存</el-button>
           <el-button @click="dialogFormVisible = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-
-    <!-- 修改花样 -->
-    <upload-figure v-model="editDialog" :default="editForm" title="修改花样" @close="editDialog=false" @submit="editSubmit" />
-
-    <!-- 花样标价弹框 -->
-    <el-dialog center title="花样标价" :visible.sync="figureDetailDialog" class="figure-dialog" width="30%">
-      <el-form ref="setPriceForm" :model="setPriceForm" :rules="priceRules" label-width="100px" label-position="left" size="small">
-        <el-form-item label="花样名称">
-          <el-input v-model="figureDetail.design_name" disabled />
-        </el-form-item>
-        <el-form-item label="花样标价" prop="price">
-          <el-input v-model="setPriceForm.price" :disabled="dialogType=='detail'" />
-        </el-form-item>
-        <el-form-item>
-          <el-button v-if="dialogType!=='detail'" type="primary" @click="setPrice('setPriceForm')">保存</el-button>
-          <el-button @click="figureDetailDialog = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -121,189 +195,162 @@
 </template>
 
 <script>
-import UploadFigure from '@/components/UploadFigure/editFigure'
-import { libraryApi } from '@/api/library'
-import { getUsers } from '@/api/users'
-import { getSub } from '@/utils'
-import { mapGetters } from 'vuex'
+import { libraryApi, libraryClassApi } from '@/api/library'
+import { formatTime } from '@/utils'
 export default {
-  components: {
-    'upload-figure': UploadFigure
+  filters: {
+    timeFormat(time) {
+      return formatTime(new Date(time))
+    },
+    statusFilter(status) {
+      const statusList = {
+        1: 'success',
+        2: 'danger',
+        3: 'warning'
+      }
+      return statusList[status]
+    }
   },
   data() {
     return {
       loading: true,
       keywords: '',
-      users_id: '',
-      status: 0,
-      activeName: '0',
-      figureList: [], // 花样列表
-      figureCount: [], // tab统计
-      usersOptions: [],
-      dialogFormVisible: false, // 新增花样弹窗
-      figureDetailDialog: false, // 设置标价弹窗
-      figureForm: {
-        design_name: '',
-        design: {
-          name: ''
-        }
-      }, // 上传花样form
-      editForm: {},
-      setPriceForm: {
-        price: ''
-      }, // 设置标价form
+      classId: '',
+      status: 1,
+      list: [], // 列表
+      libraryClass: [], // 分类列表
       pageSize: 14,
       currentPage: 1,
       total: 0,
-      figureDetail: {},
-      rules: {
-        design_name: [
-          { required: true, message: '请填写花样名称', trigger: 'blur' }
-        ],
-        design: [
-          { required: true, message: '请选择花样文件', trigger: 'change' }
-        ]
+      dialogFormVisible: false, // 新增弹窗
+      form: {
+        name: '',
+        author: '',
+        cover: '',
+        sort: 0,
+        pv: 0,
+        description: '',
+        classId: '',
+        status: 1
       },
-      editDialog: false,
-      priceRules: {
-        price: [
-          { required: true, message: '请填写花样标价', trigger: 'blur' }
+      rules: {
+        name: [
+          { required: true, message: '请填写书名', trigger: 'blur' }
+        ],
+        author: [
+          { required: true, message: '请填写作者', trigger: 'blur' }
+        ],
+        cover: [
+          { required: true, message: '请上传封面', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '请填写描述', trigger: 'blur' }
+        ],
+        classId: [
+          { required: true, message: '请选择分类', trigger: 'change' }
         ]
       },
       dialogType: 'add'
     }
   },
-  computed: {
-    ...mapGetters([
-      'roles'
-    ])
-  },
   watch: {
     dialogFormVisible(val) {
       if (val === false) {
-        this.$refs['figureForm'].resetFields()
-        this.figureForm = {
-          design_name: '',
-          design: {}
+        this.$refs['form'].resetFields()
+        this.form = {
+          name: '',
+          author: '',
+          cover: '',
+          sort: 0,
+          pv: 0,
+          description: '',
+          classId: '',
+          status: 1
         }
-      }
-    },
-    editDialog(val) {
-      if (val === false) {
-        this.editForm = {}
       }
     }
   },
   created() {
     this.fetchData()
-    if (this.roles === 1) {
-      this.getUsers()
-    }
+    this.getClassList()
   },
   methods: {
     fetchData() {
       // 获取花样列表
-      libraryApi.getList({
+      libraryApi.get_library({
         currentPage: this.currentPage,
         pageSize: this.pageSize,
-        design_name: this.keywords,
-        users_id: this.users_id,
-        status: this.status
+        keywords: this.keywords
+        // classId: this.classId,
+        // status: this.status
       }).then(res => {
         this.loading = false
         this.total = res.data.count
-        this.figureList = res.data.data
-      })
-      this.getdesignCount()
-    },
-    getUsers() {
-      getUsers().then(res => {
-        this.usersOptions = res.data.data
+        this.list = res.data.list
       })
     },
-    // 统计
-    getdesignCount() {
-      libraryApi.designCount({
-        design_name: this.keywords,
-        users_id: this.users_id
+    // 获取分类列表
+    getClassList() {
+      libraryClassApi.getList({
+        currentPage: 1,
+        pageSize: 100
       }).then(res => {
-        this.figureCount = res.data
+        this.libraryClass = res.data.list
       })
+    },
+    seeDetail(row) {
+      this.$router.push({ path: '/library/detail', query: { id: row._id }})
     },
     showDialog(type, form) {
       this.dialogType = type
       this.dialogFormVisible = true
-    },
-    showDetail(row) {
-      this.figureDetail = row
-      this.figureDetailDialog = true
+      form ? this.form = form : ''
     },
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const formData = new FormData()
-          formData.append('design', this.figureForm.design.raw, this.figureForm.design.raw.name)
-          formData.append('design_name', this.figureForm.design_name)
-          const loading = this.$loading({
-            lock: true,
-            text: '文件上传中',
-            spinner: 'el-icon-loading',
-            background: 'rgba(255,255, 255, 0.5)'
-          })
-          libraryApi.addFigure(formData).then(res => {
-            if (res.code !== 0) {
-              this.$message({
-                message: res.data.msg,
-                type: 'error'
-              })
-            } else {
-              this.$message({
-                message: '上传成功',
-                type: 'success'
-              })
-              loading.close()
-              this.fetchData()
-              this.$nextTick(() => {
-                this.$refs.figureForm.resetFields()
-                this.$refs.upload.clearFiles() // 清除已上传的文件
-              })
-              this.dialogFormVisible = false
-            }
-          }).catch(() => {
-            loading.close()
-          })
+          if (this.form._id) {
+            libraryApi.update_library(this.form).then(res => {
+              if (res.code !== 200) {
+                this.$message({
+                  message: res.msg,
+                  type: 'error'
+                })
+              } else {
+                this.$message({
+                  message: '更新成功',
+                  type: 'success'
+                })
+                this.fetchData()
+                this.$nextTick(() => {
+                  this.$refs.form.resetFields()
+                })
+                this.dialogFormVisible = false
+              }
+            })
+          } else {
+            libraryApi.add_library(this.form).then(res => {
+              if (res.code !== 200) {
+                this.$message({
+                  message: res.msg,
+                  type: 'error'
+                })
+              } else {
+                this.$message({
+                  message: '新增成功',
+                  type: 'success'
+                })
+                this.fetchData()
+                this.$nextTick(() => {
+                  this.$refs.form.resetFields()
+                })
+                this.dialogFormVisible = false
+              }
+            })
+          }
         } else {
           return false
         }
-      })
-    },
-    // 点击修改按钮
-    editItem(item) {
-      this.editForm = item
-      this.editDialog = true
-    },
-    // 保存编辑
-    editSubmit(fileList) {
-      libraryApi.editFigure({
-        design_id: this.editForm.design_id,
-        dst_path: fileList.dstfileList[0].url ? fileList.dstfileList[0].url : '',
-        emb_path: fileList.embfileList[0].url ? fileList.embfileList[0].url : '',
-        prev_png_path: fileList.pngfileList[0].url ? fileList.pngfileList[0].url : '',
-        txt_png_path: fileList.textfileList[0].url ? fileList.textfileList[0].url : ''
-      }).then(res => {
-        if (res.code !== 0) {
-          this.$message({
-            message: res.data.msg,
-            type: 'error'
-          })
-        } else {
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.editDialog = false
-        }
-      }).catch(() => {
       })
     },
     handleCurrentChange(val) {
@@ -314,14 +361,14 @@ export default {
       this.pageSize = val
       this.fetchData()
     },
-    handleDelete(id) {
-      this.$confirm('是否从花样库删除该花样?', '提示', {
+    handleDelete(row) {
+      this.$confirm(`是否删除${row.name}?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         confirmButtonClass: 'danger'
       }).then(() => {
-        libraryApi.deleteFigure({ design_id: id }).then(res => {
+        libraryApi.delete_library({ id: row._id }).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -330,48 +377,21 @@ export default {
         })
       })
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    // 花样文件选择
-    fileChange(file, fileList) {
-      const isZIP = file.raw.type === 'application/x-zip-compressed' || getSub(file.name) === 'rar'
-      if (!isZIP) {
-        this.$message.error('上传文件只能是 ZIP 格式!')
-        fileList.pop()
-        return false
-      }
-      const existFile = this.figureForm.design.name === file.name
-      if (existFile) {
-        this.$message.error('当前文件已经存在!')
-        fileList.pop()
-        return false
-      }
-      this.figureForm.design = file
-    },
-
-    // 选项卡点击
-    handleClick(tab, event) {
-      this.currentPage = 1
-      this.status = tab.name
-      this.loading = true
-      this.fetchData()
-    },
     doSearch() {
       this.currentPage = 1
       this.loading = true
       this.fetchData()
     },
-    changeStatus(item) {
-      this.$confirm(`是否${item.status === 2 ? '上架' : '下架'}该花样?`, '提示', {
+    changeStatus(item, status) {
+      this.$confirm(`是否${item.status === 2 ? '上架' : '下架'}该书?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         confirmButtonClass: 'danger'
       }).then(() => {
-        libraryApi.setStatus({
-          design_id: item.design_id,
-          status: item.status === 2 ? 3 : 2
+        libraryApi.change_status({
+          _id: item._id,
+          status: status
         }).then(res => {
           this.$message({
             type: 'success',
@@ -379,43 +399,6 @@ export default {
           })
           this.fetchData()
         })
-      })
-    },
-    bindPrice(item) {
-      this.figureDetail = item
-      if (item.price > 0) {
-        this.setPriceForm.price = item.price
-      } else {
-        this.setPriceForm.price = ''
-      }
-      this.figureDetailDialog = true
-    },
-    setPrice(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          libraryApi.setPrice({
-            design_id: this.figureDetail.design_id,
-            price: this.setPriceForm.price
-          }).then(res => {
-            this.$message({
-              message: res.msg,
-              type: 'success'
-            })
-            this.figureDetailDialog = false
-            this.fetchData()
-            this.$nextTick(() => {
-              this.$refs[formName].resetFields()
-            })
-            this.setPriceForm.price = ''
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '标价失败！'
-            })
-          })
-        } else {
-          return false
-        }
       })
     }
   }
@@ -488,23 +471,4 @@ export default {
   }
 }
 
-</style>
-<style lang="scss">
-.figure-dialog{
-  .el-dialog{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: 0 !important;
-    transform: translate(-50%, -50%);
-    max-height: calc(100% - 30px);
-    max-width: calc(100% - 30px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    .el-dialog__body {
-      overflow: auto;
-    }
-  }
-}
 </style>

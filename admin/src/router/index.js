@@ -26,7 +26,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'Index',
       component: () => import('@/views/home/index'),
-      meta: { title: '首页', icon: 'home', roles: [1, 0] }
+      meta: { title: '首页', icon: 'home' }
     }]
   },
   {
@@ -34,12 +34,12 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/users/list',
     alwaysShow: true,
-    meta: { title: '用户管理', icon: 'users', roles: [1] },
+    meta: { title: '用户管理', icon: 'users' },
     children: [{
       path: 'list',
       name: 'UsersList',
       component: () => import('@/views/users/list'),
-      meta: { title: '用户列表', roles: [1] }
+      meta: { title: '用户列表' }
     }]
   },
   {
@@ -47,17 +47,22 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/library/list',
     alwaysShow: true,
-    meta: { title: '书库管理', icon: 'figure', roles: [1, 0] },
+    meta: { title: '书库管理', icon: 'figure' },
     children: [{
       path: 'classification',
       name: 'LibraryClass',
       component: () => import('@/views/library/classList'),
-      meta: { title: '分类管理', roles: [1, 0] }
+      meta: { title: '分类管理' }
     }, {
       path: 'list',
       name: 'LibraryList',
       component: () => import('@/views/library/list'),
-      meta: { title: '书库列表', roles: [1, 0] }
+      meta: { title: '书库列表' }
+    }, {
+      path: 'detail',
+      name: 'LibraryDetail',
+      component: () => import('@/views/library/detail'),
+      meta: { title: '书本详情' }
     }]
   },
   // {
@@ -65,7 +70,7 @@ export const constantRoutes = [
   //   component: Layout,
   //   redirect: '/order/list',
   //   alwaysShow: true,
-  //   meta: { title: '订单管理', icon: 'order', roles: [1, 0] },
+  //   meta: { title: '订单管理', icon: 'order' },
   //   children: [{
   //     path: 'list',
   //     name: 'OrderList',
@@ -78,12 +83,12 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/seetting/index',
     alwaysShow: true,
-    meta: { title: '设置', icon: 'finance', roles: [1] },
+    meta: { title: '设置', icon: 'finance' },
     children: [{
       path: 'seettingIndex',
       name: 'SettingIndex',
       component: () => import('@/views/accountCenter/index'),
-      meta: { title: '个人设置', roles: [1] }
+      meta: { title: '个人设置' }
     }]
   },
   // 404 page must be placed at the end !!!

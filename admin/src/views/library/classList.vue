@@ -94,7 +94,7 @@
           <el-input v-model="form.class_name " :disabled="dialogType=='detail'" />
         </el-form-item>
         <el-form-item label="分类图标" prop="icon">
-          <el-input v-model="form.icon " :disabled="dialogType=='detail'" />
+          <el-input v-model="form.icon" clearable="" :disabled="dialogType=='detail'" />
           <!-- <el-upload
             class="avatar-uploader"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -153,10 +153,10 @@ export default {
   watch: {
     dialogFormVisible(val) {
       if (val === false) {
-        this.$refs['figureForm'].resetFields()
-        this.figureForm = {
+        this.$refs['form'].resetFields()
+        this.form = {
           class_name: '',
-          icon: ''
+          icon: 'https://s3.ax1x.com/2021/02/02/yuwGjS.jpg'
         }
       }
     }
