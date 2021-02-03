@@ -21,4 +21,4 @@ const ChapterSchema = new mongoose.Schema({
 // 建立用户数据库模型
 const Chapter = mongoose.model('Chapter', ChapterSchema)
 
-module.exports = { Chapter }
+module.exports =  Chapter 
