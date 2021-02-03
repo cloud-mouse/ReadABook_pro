@@ -1,5 +1,39 @@
 import request from '@/utils/request'
-export const figureApi = {
+export const libraryClassApi = {
+  // 获取列表
+  getList(params) {
+    return request({
+      url: '/admin-api/library_class/',
+      method: 'get',
+      params
+    })
+  },
+  // 新增分类
+  add_library_class(data) {
+    return request({
+      url: '/admin-api/library_class/',
+      method: 'post',
+      data
+    })
+  },
+  update_library_class(data) {
+    return request({
+      url: `/admin-api/library_class/`,
+      method: 'put',
+      data
+    })
+  },
+  // 新增分类
+  delete_library_class(params) {
+    return request({
+      url: '/admin-api/library_class/',
+      method: 'delete',
+      params
+    })
+  }
+}
+
+export const libraryApi = {
   // 获取列表
   getList(params) {
     return request({

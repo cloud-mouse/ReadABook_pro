@@ -293,7 +293,7 @@ export default {
         }
       })
     },
-    handleAvatarSuccesshandleAvatarSuccess(res, file) {
+    handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
       this.form.avatar_url = res.data
     },

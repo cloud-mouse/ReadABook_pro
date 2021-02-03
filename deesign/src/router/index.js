@@ -43,44 +43,36 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/figure',
+    path: '/library',
     component: Layout,
-    redirect: '/figure/list',
+    redirect: '/library/list',
     alwaysShow: true,
-    meta: { title: '花样库', icon: 'figure', roles: [1, 0] },
+    meta: { title: '书库管理', icon: 'figure', roles: [1, 0] },
     children: [{
+      path: 'classification',
+      name: 'LibraryClass',
+      component: () => import('@/views/library/classList'),
+      meta: { title: '分类管理', roles: [1, 0] }
+    }, {
       path: 'list',
-      name: 'FigureList',
-      component: () => import('@/views/figureLibrary/list'),
-      meta: { title: '花样列表', roles: [1, 0] }
+      name: 'LibraryList',
+      component: () => import('@/views/library/list'),
+      meta: { title: '书库列表', roles: [1, 0] }
     }]
   },
-  {
-    path: '/order',
-    component: Layout,
-    redirect: '/order/list',
-    alwaysShow: true,
-    meta: { title: '订单管理', icon: 'order', roles: [1, 0] },
-    children: [{
-      path: 'list',
-      name: 'OrderList',
-      component: () => import('@/views/order/list'),
-      meta: { title: '订单列表', roles: [1, 0] }
-    }]
-  },
-  {
-    path: '/finance',
-    component: Layout,
-    redirect: '/finance/list',
-    alwaysShow: true,
-    meta: { title: '财务管理', icon: 'finance', roles: [1] },
-    children: [{
-      path: 'list',
-      name: 'FinanceList',
-      component: () => import('@/views/finance/list'),
-      meta: { title: '财务列表', roles: [1, 0] }
-    }]
-  },
+  // {
+  //   path: '/order',
+  //   component: Layout,
+  //   redirect: '/order/list',
+  //   alwaysShow: true,
+  //   meta: { title: '订单管理', icon: 'order', roles: [1, 0] },
+  //   children: [{
+  //     path: 'list',
+  //     name: 'OrderList',
+  //     component: () => import('@/views/order/list'),
+  //     meta: { title: '订单列表', roles: [1, 0] }
+  //   }]
+  // },
   {
     path: '/setting',
     component: Layout,

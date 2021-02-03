@@ -122,7 +122,7 @@
 
 <script>
 import UploadFigure from '@/components/UploadFigure/editFigure'
-import { figureApi } from '@/api/figure'
+import { libraryApi } from '@/api/library'
 import { getUsers } from '@/api/users'
 import { getSub } from '@/utils'
 import { mapGetters } from 'vuex'
@@ -203,7 +203,7 @@ export default {
   methods: {
     fetchData() {
       // 获取花样列表
-      figureApi.getList({
+      libraryApi.getList({
         currentPage: this.currentPage,
         pageSize: this.pageSize,
         design_name: this.keywords,
@@ -223,7 +223,7 @@ export default {
     },
     // 统计
     getdesignCount() {
-      figureApi.designCount({
+      libraryApi.designCount({
         design_name: this.keywords,
         users_id: this.users_id
       }).then(res => {
@@ -250,7 +250,7 @@ export default {
             spinner: 'el-icon-loading',
             background: 'rgba(255,255, 255, 0.5)'
           })
-          figureApi.addFigure(formData).then(res => {
+          libraryApi.addFigure(formData).then(res => {
             if (res.code !== 0) {
               this.$message({
                 message: res.data.msg,
@@ -284,7 +284,7 @@ export default {
     },
     // 保存编辑
     editSubmit(fileList) {
-      figureApi.editFigure({
+      libraryApi.editFigure({
         design_id: this.editForm.design_id,
         dst_path: fileList.dstfileList[0].url ? fileList.dstfileList[0].url : '',
         emb_path: fileList.embfileList[0].url ? fileList.embfileList[0].url : '',
@@ -321,7 +321,7 @@ export default {
         type: 'warning',
         confirmButtonClass: 'danger'
       }).then(() => {
-        figureApi.deleteFigure({ design_id: id }).then(res => {
+        libraryApi.deleteFigure({ design_id: id }).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -369,7 +369,7 @@ export default {
         type: 'warning',
         confirmButtonClass: 'danger'
       }).then(() => {
-        figureApi.setStatus({
+        libraryApi.setStatus({
           design_id: item.design_id,
           status: item.status === 2 ? 3 : 2
         }).then(res => {
@@ -393,7 +393,7 @@ export default {
     setPrice(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          figureApi.setPrice({
+          libraryApi.setPrice({
             design_id: this.figureDetail.design_id,
             price: this.setPriceForm.price
           }).then(res => {

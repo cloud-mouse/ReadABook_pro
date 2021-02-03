@@ -23,13 +23,13 @@ service.interceptors.request.use(
       // 请根据实际情况修改
       config.headers['Authorization'] = `Basic ${getToken()}`
     }
-    if (config.method === 'post') { // 支持2种方法，默认使用Form Data
+    if (config.method === 'post' || config.method === 'put') { // 支持2种方法，默认使用Form Data
       // 如果useRequestBody=false, 默认支持Form Data
       if (!config.headers['Content-Type']) {
         config.data = qs.stringify(config.data)
         config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
       }
-    } else if (config.method === 'get') {
+    } else if (config.method === 'get' || config.method === 'delete') {
       const newParams = {}
       for (const key in config.params) {
         newParams[key] = config.params[key]
