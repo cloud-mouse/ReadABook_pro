@@ -113,6 +113,11 @@
               size="mini"
               @click.native="seeDetail(scope.row)"
             >查看章节</el-button>
+            <el-button
+              type="text"
+              size="mini"
+              @click.native="removeChapter(scope.row)"
+            >清空</el-button>
           </template>
         </el-table-column>
         <el-table-column
@@ -207,6 +212,7 @@
 
 <script>
 import { libraryApi, libraryClassApi } from '@/api/library'
+import { chapterApi } from '@/api/chapter'
 import { formatTime } from '@/utils'
 export default {
   filters: {
@@ -316,6 +322,16 @@ export default {
       this.dialogType = type
       this.dialogFormVisible = true
       form ? this.form = JSON.parse(JSON.stringify(form)) : ''
+    },
+    removeChapter(row) {
+      chapterApi.delete_chapter({
+        id: row._id
+      }).then(res => {
+        this.$message({
+          message: '清除成功',
+          type: 'success'
+        })
+      })
     },
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {

@@ -6,6 +6,10 @@ const ChapterSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    chapter_index: {
+      type: Number,
+      default: 0
+    },
     description: {
       type: String
     },
@@ -15,6 +19,14 @@ const ChapterSchema = new mongoose.Schema({
     },
     content: {
       type: String
+    },
+    createTime: {
+      type: Date,
+      default: Date.now
+    },
+    updateTime: {
+      type: Date,
+      default: Date.now
     }
 })
 

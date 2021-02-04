@@ -3,10 +3,13 @@ var router = express.Router();
 const Chapter = require('../../model/Chapter')
 const checkToken = require('../../middleware/checkToken')
 
+var {crawlBook} = require('./pachong')
+
 // 获取小说章节列表
 router.get('/', checkToken, async (req, res, next) => {
-  let { currentPage, pageSize, _id } = req.query
-  const libraryClass = await Chapter.find(_id).skip((currentPage - 1) * pageSize).limit(pageSize * 1)  // 分页查询
+  let { currentPage, pageSize, id } = req.query
+  const libraryClass = await Chapter.find({libraryId: id})
+  // const libraryClass = await Chapter.find(_id).skip((currentPage - 1) * pageSize).limit(pageSize * 1)  // 分页查询
   const count = await Chapter.countDocuments()  // 计数
   res.send({
     code: 200,
@@ -43,7 +46,7 @@ router.put('/', checkToken, async (req, res, next) => {
 // 删除分类
 router.delete('/', checkToken, async (req, res, next) => {
   let id = req.query.id
-  let result = await Chapter.findOneAndDelete({ _id: id })
+  let result = await Chapter.deleteMany({ libraryId: id })
   if (!result) {
     res.send({
       code: 400,
@@ -61,7 +64,9 @@ router.delete('/', checkToken, async (req, res, next) => {
 // 新增章节
 router.post('/', checkToken, async(req, res, next)=>{
   let data = req.body
-  let result = await Chapter.create(data)
+  let id = data.id
+  let result = await crawlBook(id)
+  // let result = await Chapter.create(data)
   if(!result) {
     res.send({
       code: 400,
@@ -72,7 +77,7 @@ router.post('/', checkToken, async(req, res, next)=>{
   }
   res.send({
     code: 200,
-    msg: '新增成功',
+    msg: '新增成功'
   })
 })
 
