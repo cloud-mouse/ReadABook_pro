@@ -8,7 +8,7 @@ router.get('/', checkToken, async(req, res, next)=>{
   let { currentPage, pageSize, keywords, _id} = req.query
   const reg = new RegExp(keywords, 'i') //不区分大小写
   let query = {
-    $or : [{name : {$regex : reg}},{auth : {$regex : reg}}],
+    $or : [{name : {$regex : reg}},{author : {$regex : reg}}],
   }
   // 查询书本详情
   if(_id){

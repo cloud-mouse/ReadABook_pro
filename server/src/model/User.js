@@ -21,6 +21,18 @@ const UserSchema = new mongoose.Schema({
     },
     avator: {
         type: String
+    },
+    status: {
+        type: Number,
+        default: 0
+    },
+    createTime: {
+        type: Date,
+        default: Date.now
+    },
+    updateTime: {
+        type: Date,
+        default: Date.now
     }
 })
 

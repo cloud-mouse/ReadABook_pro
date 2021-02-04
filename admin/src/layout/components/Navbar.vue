@@ -1,13 +1,11 @@
 <template>
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
     <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="userInfo.avatar" class="user-avatar">
+          <img :src="avatar" class="user-avatar">
           <span>{{ userInfo.username }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
@@ -15,9 +13,9 @@
           <el-dropdown-item style="text-align:center">
             <p class="user-name">账号：{{ userInfo.username }}</p>
           </el-dropdown-item>
-          <el-dropdown-item divided style="text-align:center" @click.native="showChange = true">
+          <!-- <el-dropdown-item divided style="text-align:center" @click.native="showChange = true">
             修改密码
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item divided style="text-align:center" @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>

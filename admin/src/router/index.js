@@ -61,8 +61,9 @@ export const constantRoutes = [
     }, {
       path: 'detail',
       name: 'LibraryDetail',
+      hidden: true,
       component: () => import('@/views/library/detail'),
-      meta: { title: '书本详情' }
+      meta: { title: '章节详情' }
     }]
   },
   // {

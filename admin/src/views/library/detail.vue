@@ -1,6 +1,9 @@
 <template>
-  <div class="">
-    章节详情
+  <div class="chapter-detail">
+    <div class="book-info">
+      <img class="cover" :src="bookInfo.cover" alt="">
+      <div class="right-info" />
+    </div>
   </div>
 </template>
 
@@ -42,6 +45,18 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.chapter-detail{
+  padding: 15px;
+  background: #f5f5f5;
+  .book-info{
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    .cover{
+      height: 80px;
+    }
+  }
+}
 </style>

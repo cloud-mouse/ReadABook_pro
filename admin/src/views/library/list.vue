@@ -20,14 +20,13 @@
         <el-button size="small" icon="el-icon-search" type="primary" @click="doSearch()">搜索</el-button>
       </div>
       <div class="operation">
-        <el-button size="small" icon="el-icon-plus" type="primary" @click="showDialog('add')">新增花样</el-button>
+        <el-button size="small" icon="el-icon-plus" type="primary" @click="showDialog('add')">新增</el-button>
       </div>
     </div>
     <div class="content">
       <el-table
         v-loading="loading"
         :data="list"
-        style="width: 100%"
         fit
         highlight-current-row
         tooltip-effect="dark"
@@ -35,7 +34,6 @@
         <el-table-column
           label="序号"
           align="center"
-          width="100"
           type="index"
         />
         <el-table-column
@@ -49,6 +47,11 @@
         <el-table-column
           prop="name"
           label="书名"
+          align="center"
+        />
+        <el-table-column
+          prop="author"
+          label="作者"
           align="center"
         />
         <el-table-column
@@ -81,7 +84,6 @@
             </el-tag>
           </template>
         </el-table-column>
-
         <el-table-column
           prop="createTime"
           label="创建时间"
@@ -100,17 +102,26 @@
             {{ scope.row.updateTime | timeFormat }}
           </template>
         </el-table-column>
-
         <el-table-column
           fixed="right"
-          label="操作"
+          label="章节"
           align="center"
         >
           <template slot-scope="scope">
             <el-button
+              type="text"
               size="mini"
               @click.native="seeDetail(scope.row)"
             >查看章节</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          align="center"
+          width="220"
+        >
+          <template slot-scope="scope">
             <el-button
               type="primary"
               size="mini"
@@ -304,7 +315,7 @@ export default {
     showDialog(type, form) {
       this.dialogType = type
       this.dialogFormVisible = true
-      form ? this.form = form : ''
+      form ? this.form = JSON.parse(JSON.stringify(form)) : ''
     },
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {

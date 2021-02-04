@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var  bodyParser = require('body-parser');
-// var path = require('path');
+var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors=require("cors");
@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
+app.use('/admin', express.static(path.join(__dirname, 'views/admin'))) // 后台访问地址
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter); // 测试的用户接口

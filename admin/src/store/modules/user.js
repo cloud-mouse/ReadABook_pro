@@ -1,6 +1,5 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
@@ -67,7 +66,7 @@ const actions = {
         }
         const { username, avatar } = data
         commit('SET_NAME', username)
-        commit('SET_AVATAR', avatar || '')
+        commit('SET_AVATAR', avatar || 'https://s3.ax1x.com/2021/02/04/y1VbGj.jpg')
         commit('SET_USERINFO', data)
         resolve(data)
       }).catch(error => {
@@ -79,14 +78,10 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      removeToken() // must remove  token  first
+      // resetRouter()
+      commit('RESET_STATE')
+      resolve()
     })
   },
 
