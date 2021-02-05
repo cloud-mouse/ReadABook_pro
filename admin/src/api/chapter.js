@@ -31,5 +31,15 @@ export const chapterApi = {
       method: 'delete',
       params
     })
+  },
+  importChapter(data) {
+    return request({
+      url: '/admin-api/chapter/imporChapter',
+      method: 'post',
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }

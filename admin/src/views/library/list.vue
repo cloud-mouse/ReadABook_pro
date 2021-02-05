@@ -59,7 +59,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.classId.class_name }}</span>
+            <span v-if="scope.row.classId">{{ scope.row.classId.class_name }}</span>
+            <span v-else>未设置</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -104,7 +105,7 @@
         </el-table-column>
         <el-table-column
           fixed="right"
-          label="章节"
+          label="章节操作"
           align="center"
         >
           <template slot-scope="scope">
@@ -112,7 +113,7 @@
               type="text"
               size="mini"
               @click.native="seeDetail(scope.row)"
-            >查看章节</el-button>
+            >查看</el-button>
             <el-button
               type="text"
               size="mini"
@@ -176,13 +177,13 @@
         size="small"
       >
         <el-form-item label="封面" prop="cover">
-          <el-input v-model="form.cover " :disabled="dialogType=='detail'" />
+          <el-input v-model="form.cover" />
         </el-form-item>
         <el-form-item label="书本名称" prop="name">
-          <el-input v-model="form.name" :disabled="dialogType=='detail'" />
+          <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="书本作者" prop="author">
-          <el-input v-model="form.author" :disabled="dialogType=='detail'" />
+          <el-input v-model="form.author" />
         </el-form-item>
         <el-form-item label="书本分类" prop="classId">
           <el-select
@@ -199,14 +200,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="书本描述" prop="description">
-          <el-input v-model="form.description" :disabled="dialogType=='detail'" />
+          <el-input v-model="form.description" />
+        </el-form-item>
+        <el-form-item label="书本排序">
+          <el-input v-model="form.sort" />
         </el-form-item>
         <el-form-item>
-          <el-button v-if="dialogType!=='detail'" type="primary" @click="onSubmit('form')">保存</el-button>
+          <el-button type="primary" @click="onSubmit('form')">保存</el-button>
           <el-button @click="dialogFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
+
   </div>
 </template>
 
@@ -214,6 +219,7 @@
 import { libraryApi, libraryClassApi } from '@/api/library'
 import { chapterApi } from '@/api/chapter'
 import { formatTime } from '@/utils'
+
 export default {
   filters: {
     timeFormat(time) {
@@ -230,6 +236,7 @@ export default {
   },
   data() {
     return {
+
       loading: true,
       keywords: '',
       classId: '',
@@ -324,15 +331,23 @@ export default {
       form ? this.form = JSON.parse(JSON.stringify(form)) : ''
     },
     removeChapter(row) {
-      chapterApi.delete_chapter({
-        id: row._id
-      }).then(res => {
-        this.$message({
-          message: '清除成功',
-          type: 'success'
+      this.$confirm(`此操作将清空${row.name}的全部章节，是否确认清楚?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        confirmButtonClass: 'danger'
+      }).then(() => {
+        chapterApi.delete_chapter({
+          libraryId: row._id
+        }).then(res => {
+          this.$message({
+            message: '清除成功',
+            type: 'success'
+          })
         })
       })
     },
+
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

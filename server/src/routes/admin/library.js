@@ -1,18 +1,20 @@
 var express = require('express');
 var router = express.Router();
 const Library = require('../../model/Library')
+const Chapter = require('../../model/Chapter')
 const checkToken = require('../../middleware/checkToken')
+var {upload_file} = require('../../middleware/common')
 
-// 获取用户列表
+// 获取书本列表
 router.get('/', checkToken, async(req, res, next)=>{
-  let { currentPage, pageSize, keywords, _id} = req.query
+  let { currentPage, pageSize, keywords, id} = req.query
   const reg = new RegExp(keywords, 'i') //不区分大小写
   let query = {
     $or : [{name : {$regex : reg}},{author : {$regex : reg}}],
   }
   // 查询书本详情
-  if(_id){
-    const data = await Library.findById(_id).populate('classId')
+  if(id){
+    const data = await Library.findById(id).populate('classId')
     if(data){
       res.send({
         code: 200,
@@ -22,7 +24,7 @@ router.get('/', checkToken, async(req, res, next)=>{
     }
   }else {
     // 查询书本列表
-    const list = await Library.find(query).populate('classId').skip((currentPage - 1) * pageSize).sort({sort:-1}).limit(pageSize * 1)  // 分页查询
+    const list = await Library.find(query).populate('classId').sort({"sort": -1}).skip((currentPage - 1) * pageSize).sort({sort:-1}).limit(pageSize * 1)  // 分页查询
     const count = await Library.countDocuments(query)  // 计数
     res.send({
       code: 200,
@@ -60,7 +62,16 @@ router.put('/', checkToken, async (req, res, next) => {
 // 删除分类
 router.delete('/', checkToken, async (req, res, next) => {
   let id = req.query.id
-  let result = await Library.findOneAndDelete({ _id: id })
+  var chapterDelete = await Chapter.deleteMany({ libraryId: id })
+  if(chapterDelete) {
+    var result = await Library.findOneAndDelete({ _id: id })
+  }else {
+    res.send({
+      code: 400,
+      msg: '小说章节删除失败' +chapterDelete,
+      
+    })
+  }
   if (!result) {
     res.send({
       code: 400,

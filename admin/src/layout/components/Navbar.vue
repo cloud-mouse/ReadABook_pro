@@ -11,6 +11,9 @@
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <el-dropdown-item style="text-align:center">
+            <p class="user-name">姓名：{{ userInfo.realname }}</p>
+          </el-dropdown-item>
+          <el-dropdown-item style="text-align:center">
             <p class="user-name">账号：{{ userInfo.username }}</p>
           </el-dropdown-item>
           <!-- <el-dropdown-item divided style="text-align:center" @click.native="showChange = true">

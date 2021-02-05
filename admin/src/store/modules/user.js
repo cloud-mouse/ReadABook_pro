@@ -64,9 +64,9 @@ const actions = {
         if (!data) {
           reject('验证失败，请重新登录.')
         }
-        const { username, avatar } = data
+        const { username, avator } = data
         commit('SET_NAME', username)
-        commit('SET_AVATAR', avatar || 'https://s3.ax1x.com/2021/02/04/y1VbGj.jpg')
+        commit('SET_AVATAR', avator || 'https://s3.ax1x.com/2021/02/04/y1VbGj.jpg')
         commit('SET_USERINFO', data)
         resolve(data)
       }).catch(error => {

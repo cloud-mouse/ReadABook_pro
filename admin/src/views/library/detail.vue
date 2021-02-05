@@ -19,10 +19,84 @@
         </div>
         <div v-if="!chapterList.length" class="no-data">
           <p>本书当前暂无章节，请添加章节</p>
-          <el-button type="primary" size="small" @click="addChapter">添加章节</el-button>
+          <el-button type="primary" size="small" icon="el-icon-document-add" @click="addChapter">添加章节</el-button>
+          <el-button size="small" @click="showGeshi = true">查看导入格式</el-button>
+        </div>
+        <div v-if="chapterList.length" class="pagination-box">
+          <el-pagination
+            :total="total"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 14,28]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
         </div>
       </div>
     </div>
+    <!-- 导入的文件数据格式 -->
+    <el-dialog
+      title="章节Json格式"
+      :visible.sync="showGeshi"
+      width="30%"
+      @close="showGeshi = false"
+    >
+      <div>
+        <json-viewer
+          :value="jsonData"
+          :expand-depth="5"
+          copyable
+          boxed
+          sort
+        />
+      </div>
+      <span slot="footer">
+        <el-button type="primary" @click="showGeshi = false">我知道了</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 添加章节 -->
+    <!-- 文件导入弹窗 -->
+    <el-dialog
+      title="文件导入"
+      :visible.sync="showFileDialog"
+      width="30%"
+      @close="showFileDialog = false"
+    >
+      <div class="import-form">
+        <el-form
+          ref="form"
+          :model="form"
+          label-position="top"
+          size="small"
+        >
+          <el-form-item label="选择章节文件">
+            <el-upload
+              ref="upload"
+              name="design"
+              class="upload-demo"
+              action
+              :on-remove="handleRemove"
+              :on-change="fileChange"
+              multiple
+              :auto-upload="false"
+              :with-credentials="true"
+              :limit="1"
+            >
+              <el-button slot="trigger" size="small" type="primary">选取章节文件</el-button>
+            </el-upload>
+          </el-form-item>
+
+        </el-form>
+        <span slot="footer">
+          <el-button type="primary" @click="onSubmit('form')">保存</el-button>
+          <el-button @click="showFileDialog = false">取消</el-button>
+        </span>
+      </div>
+    </el-dialog>
+
+    <!-- 章节内容查看 -->
     <el-dialog
       :title="showItem.chapter_name"
       :visible.sync="showContent"
@@ -38,15 +112,30 @@
 <script>
 import { libraryApi } from '@/api/library'
 import { chapterApi } from '@/api/chapter'
+import { getToken } from '@/utils/auth'
+
 export default {
   name: 'LibraryDetail',
   data() {
     return {
       id: this.$route.query.id,
+      total: 0,
+      currentPage: 1,
+      pageSize: 10,
       bookInfo: {},
       chapterList: [],
       showItem: {},
-      showContent: false
+      showContent: false,
+      showFileDialog: false,
+      showGeshi: false,
+      uplaodUrl: 'http://localhost:3000/admin-api/chapter/imporChapter?id=' + this.$route.query.id,
+      fileList: [],
+      token: getToken(),
+      form: {
+        chapter: {}
+      },
+      jsonData: [{ 'chapter_index': '章节索引', 'chapter_name': '章节名称', 'content': '章节内容' }]
+
     }
   },
   created() {
@@ -59,25 +148,87 @@ export default {
     getDetail() {
       const that = this
       libraryApi.get_library({
-        _id: that.id
+        id: that.id
       }).then(res => {
         that.bookInfo = res.data
       })
     },
     getChapter() {
       chapterApi.get_chapter({
+        currentPage: this.currentPage,
+        pageSize: this.pageSize,
         id: this.id
       }).then(res => {
         this.chapterList = res.data.list
+        this.total = res.data.count
+        this.list = res.data.list
+      })
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    // 花样文件选择
+    fileChange(file, fileList) {
+      const isJson = file.raw.type === 'application/json'
+      if (!isJson) {
+        this.$message.error('上传文件只能是 Json 格式!')
+        fileList.pop()
+        return false
+      }
+      const existFile = this.form.chapter.name === file.name
+      if (existFile) {
+        this.$message.error('当前文件已经存在!')
+        fileList.pop()
+        return false
+      }
+      this.form.chapter = file
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getChapter()
+    },
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getChapter()
+    },
+    onSubmit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const formData = new FormData()
+          formData.append('file', this.form.chapter.raw, this.form.chapter.raw.name)
+          formData.append('id', this.id)
+          const loading = this.$loading({
+            lock: true,
+            text: '文件上传中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(255,255, 255, 0.5)'
+          })
+          console.log(formData)
+          chapterApi.importChapter(formData).then(res => {
+            if (res.code !== 200) {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            } else {
+              this.$message({
+                message: '导入成功',
+                type: 'success'
+              })
+              loading.close()
+              this.getChapter()
+              this.showFileDialog = false
+            }
+          }).catch(() => {
+            loading.close()
+          })
+        } else {
+          return false
+        }
       })
     },
     addChapter() {
-      chapterApi.add_chapter({
-        id: this.id
-      }).then(res => {
-        console.log(res)
-        this.getChapter()
-      })
+      this.showFileDialog = true
     },
     showContents(item) {
       item.content = item.content.replace(/\n|\r\n/g, '<br>')
@@ -145,6 +296,10 @@ export default {
       .no-data{
         text-align: center;
         padding: 20px;
+      }
+      .pagination-box{
+        text-align: center;
+        padding-top: 15px;
       }
     }
   }

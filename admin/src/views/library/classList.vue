@@ -65,10 +65,6 @@
             >修改</el-button>
             <el-button
               size="mini"
-              @click.native="showDialog('detail', scope.row)"
-            >查看</el-button>
-            <el-button
-              size="mini"
               type="danger"
               @click="handleDelete(scope.row._id)"
             >删除</el-button>
@@ -91,10 +87,10 @@
     <el-dialog center :title="'新增分类'" :visible.sync="dialogFormVisible" width="25%">
       <el-form ref="figureForm" :model="form" :rules="rules" label-width="100px" label-position="left" size="small">
         <el-form-item label="分类名称" prop="class_name">
-          <el-input v-model="form.class_name " :disabled="dialogType=='detail'" />
+          <el-input v-model="form.class_name" />
         </el-form-item>
         <el-form-item label="分类图标" prop="icon">
-          <el-input v-model="form.icon" clearable="" :disabled="dialogType=='detail'" />
+          <el-input v-model="form.icon" clearable="" />
           <!-- <el-upload
             class="avatar-uploader"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -107,7 +103,7 @@
           </el-upload> -->
         </el-form-item>
         <el-form-item>
-          <el-button v-if="dialogType!=='detail'" type="primary" @click="onSubmit('figureForm')">保存</el-button>
+          <el-button type="primary" @click="onSubmit('figureForm')">保存</el-button>
           <el-button @click="dialogFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -153,7 +149,6 @@ export default {
   watch: {
     dialogFormVisible(val) {
       if (val === false) {
-        this.$refs['form'].resetFields()
         this.form = {
           class_name: '',
           icon: 'https://s3.ax1x.com/2021/02/02/yuwGjS.jpg'
