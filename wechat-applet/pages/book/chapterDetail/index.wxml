@@ -1,6 +1,6 @@
 <import src="../../../wxParse/wxParse.wxml" />
 <view class="chapter-detail" 
-style="font-size:{{fontSize}}px"
+style="font-size:{{fontSize}}rpx"
 catchtap="showSetting">
   <view>
     <view class="title">
@@ -20,8 +20,10 @@ catchtap="showSetting">
   <view class="setting-box">
     <view class="setting-title" style="font-size: 16px">阅读设置</view>
     <view class="setting-content">
-        字体大小： 
-      <van-slider value="{{fontSize}}" min="10" max="40"  bind:change="fontsizeChange" />
+    <view style="width: 70%; margin: 0 auto">
+      <view style="margin-bottom: 10px">字体大小：</view>
+      <van-slider value="{{fontSize}}" min="10" max="80"  bind:change="fontsizeChange" />
+    </view>
     </view>
   </view>
 </van-popup>

@@ -158,5 +158,6 @@ App({
   },
   globalData: {
     userInfo: {},
+    fontSize: 28
   }
 })

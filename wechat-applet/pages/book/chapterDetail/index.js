@@ -10,7 +10,7 @@ Page({
   data: {
     chapterDetail: null,
     show: false,
-    fontSize: 14
+    fontSize: 28
   },
 
   /**
@@ -18,12 +18,16 @@ Page({
    */
   onLoad: function (options) {
     this.getChapter(options.id)
+    this.setData({
+      fontSize: App.globalData.fontSize
+    })
+    
   },
   fontsizeChange(e) {
-    console.log(e);
     this.setData({
-      fontSize: e.detail.value
+      fontSize: e.detail
     })
+    App.globalData.fontSize = e.detail
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
