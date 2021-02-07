@@ -21,6 +21,12 @@ router.get('/', checkToken, async(req, res, next)=>{
         msg: '获取成功',
         data: data
       })
+    }else {
+      res.send({
+        code: 200,
+        msg: '获取失败',
+        data: data
+      })
     }
   }else {
     // 查询书本列表

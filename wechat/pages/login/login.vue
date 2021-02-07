@@ -126,6 +126,7 @@
                         uni.getUserInfo({
                             provider: value,
                             success: (infoRes) => {
+								console.log(infoRes)
                                 /**
                                  * 实际开发中，获取用户信息后，需要将信息上报至服务端。
                                  * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。

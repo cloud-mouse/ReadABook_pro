@@ -1,0 +1,22 @@
+<view class="index">
+  <van-tabs swipeable bind:change="onChange">
+    <van-tab title="{{item.class_name}}" 
+      wx:for="{{classList}}" wx:key="_id"
+      data-id="{{item._id}}"
+    >
+      <view class="book-list" wx:if="{{bookList.length>0}}">
+        <view class="book-item" wx:for="{{bookList}}" wx:for-item="book" wx:key="_id" 
+          data-id="{{book._id}}" 
+          bindtap="toBookDetail"
+        >
+          <image src="{{book.cover}}" ></image>
+          <view class="book-info">
+            <view class="book-name">{{book.name}}</view>
+            <view class="book-author">{{book.author}}</view>
+            <view class="book-desc">{{book.description}}</view>
+          </view>
+        </view>
+      </view>
+    </van-tab>
+  </van-tabs>
+</view> 

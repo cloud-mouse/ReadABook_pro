@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/user/index",
+    "pages/book/bookDetail/index",
+    "pages/book/chapterDetail/index"
+  ],
+  "usingComponents": {
+    "van-toast": "@vant/weapp/toast/index"
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "看书吧",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#fccc25",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "./assets/icons/home.png",
+        "selectedIconPath": "./assets/icons/home-selected.png"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "text": "我的",
+        "iconPath": "./assets/icons/my.png",
+        "selectedIconPath": "./assets/icons/my-selected.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

@@ -34,7 +34,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/users/list',
     alwaysShow: true,
-    meta: { title: '用户管理', icon: 'users' },
+    meta: { title: '用户管理', icon: 'peoples' },
     children: [{
       path: 'list',
       name: 'UsersList',
@@ -47,7 +47,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/library/list',
     alwaysShow: true,
-    meta: { title: '书库管理', icon: 'figure' },
+    meta: { title: '书库管理', icon: 'book' },
     children: [{
       path: 'classification',
       name: 'LibraryClass',
@@ -80,16 +80,29 @@ export const constantRoutes = [
   //   }]
   // },
   {
-    path: '/setting',
+    path: '/accountCenter',
     component: Layout,
-    redirect: '/seetting/index',
+    redirect: '/accountCenter/seettingIndex',
     alwaysShow: true,
-    meta: { title: '设置', icon: 'finance' },
+    meta: { title: '个人设置', icon: 'personal' },
     children: [{
       path: 'seettingIndex',
       name: 'SettingIndex',
       component: () => import('@/views/accountCenter/index'),
       meta: { title: '个人设置' }
+    }]
+  },
+  {
+    path: '/setting',
+    component: Layout,
+    redirect: '/setting/userList',
+    alwaysShow: true,
+    meta: { title: '系统设置', icon: 'setting' },
+    children: [{
+      path: 'userList',
+      name: 'UsersList',
+      component: () => import('@/views/setting/userList'),
+      meta: { title: '用户管理' }
     }]
   },
   // 404 page must be placed at the end !!!

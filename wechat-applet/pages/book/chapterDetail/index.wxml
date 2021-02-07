@@ -1,0 +1,27 @@
+<import src="../../../wxParse/wxParse.wxml" />
+<view class="chapter-detail" 
+style="font-size:{{fontSize}}px"
+catchtap="showSetting">
+  <view>
+    <view class="title">
+      {{chapterDetail.chapter_name}}
+    </view>
+    <template is="wxParse" data="{{wxParseData:article.nodes}}" />
+  </view>
+</view>
+<van-popup
+  show="{{ show }}"
+  position="bottom"
+  overlay="{{true}}"
+  custom-style="height: 20%"
+  round
+  bind:close="showSetting"
+>
+  <view class="setting-box">
+    <view class="setting-title" style="font-size: 16px">阅读设置</view>
+    <view class="setting-content">
+        字体大小： 
+      <van-slider value="{{fontSize}}" min="10" max="40"  bind:change="fontsizeChange" />
+    </view>
+  </view>
+</van-popup>

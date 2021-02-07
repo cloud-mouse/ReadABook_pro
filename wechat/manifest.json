@@ -1,7 +1,7 @@
 {
     "name" : "topic-circle-wechat",
     "appid" : "__UNI__BAA14A3",
-    "description" : "话题圈",
+    "description" : "看书吧",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,
@@ -55,7 +55,8 @@
         "appid" : "wx84963d0ed675e7d0",
         "setting" : {
             "urlCheck" : false,
-            "es6" : true
+            "es6" : true,
+            "postcss" : true
         },
         "usingComponents" : true,
         "permission" : {

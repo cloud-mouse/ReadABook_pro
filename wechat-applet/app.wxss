@@ -1,0 +1,3 @@
+/* 引入colorui的css */
+@import "./componet/colorUi/icon.wxss";
+@import "./componet/colorUi//main.wxss";

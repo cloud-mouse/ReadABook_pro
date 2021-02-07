@@ -1,0 +1,19 @@
+page{
+  background: #fff;
+}
+.chapter-detail{
+  padding: 20rpx 30rpx;
+  font-size: 28rpx;
+}
+.title{
+  padding: 20rpx;
+  text-align: center;
+  font-size: 34rpx;
+  color: #333;
+  font-weight: bold;
+}
+.setting-box{
+  padding: 20rpx;
+  width: 100%;
+  text-align: center;
+}

@@ -9,7 +9,7 @@ var cors=require("cors");
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
 var adminRouter = require('./src/routes/admin/index');
-var webRouter = require('./src/routes/web/index');
+var wxRouter = require('./src/routes/wechat/index');
 
 var app = express();
 
@@ -26,7 +26,7 @@ app.use('/admin', express.static(path.join(__dirname, 'views/admin'))) // 后台
 app.use('/', indexRouter);
 app.use('/users', usersRouter); // 测试的用户接口
 app.use('/admin-api', adminRouter); // 管理后台的接口
-app.use('/web-api', webRouter); // 应用前端的接口
+app.use('/wx-api', wxRouter); // wx小程序前端的接口
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

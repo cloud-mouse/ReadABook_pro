@@ -4,11 +4,11 @@
       <div class="form-content-item">
         <div class="block-title"><card-tag tag-name="基本信息" /></div>
         <div class="block-content">
-          <el-form-item label="设计师姓名">
-            <el-input v-model="form.designer_name" clearable size="small" style="width: 50%" />
+          <el-form-item label="真实姓名">
+            <el-input v-model="form.realname" clearable size="small" style="width: 50%" />
           </el-form-item>
           <el-form-item label="手机号(账号)">
-            <el-input v-model="form.designer_phone" disabled clearable size="small" style="width: 50%" />
+            <el-input v-model="form.phone" disabled clearable size="small" style="width: 50%" />
           </el-form-item>
           <el-form-item label="设计师头像">
             <el-upload
@@ -44,23 +44,6 @@
 
         </div>
       </div>
-      <div class="form-content-item">
-        <div class="block-title"><card-tag tag-name="收款账号配置" /></div>
-        <div class="block-content">
-          <el-form-item label="银行账号">
-            <el-input v-model="form.bank_card_number" clearable size="small" style="width: 50%" />
-          </el-form-item>
-          <el-form-item label="微信号">
-            <el-input v-model="form.wechat" clearable size="small" style="width: 50%" />
-          </el-form-item>
-          <el-form-item label="支付宝账号">
-            <el-input v-model="form.alipay" clearable size="small" style="width: 50%" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="small" @click="submitForm('form')">保存</el-button>
-          </el-form-item>
-        </div>
-      </div>
     </el-form>
   </div>
 </template>
@@ -84,8 +67,8 @@ export default {
       imageUrl: '',
       fileList: [{ name: 'cert', url: '' }],
       form: {
-        avatar_url: '',
-        designer_name: '',
+        avator: '',
+        realname: '',
         birthday: '',
         designer_phone: '',
         sex: '',
