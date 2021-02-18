@@ -6,6 +6,4 @@ router.get('/', function(req, res, next) {
   res.json({ title: '首页api' });
 });
 
-
-
 module.exports = router;

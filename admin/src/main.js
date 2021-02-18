@@ -24,7 +24,14 @@ Vue.use(ElementUI)
 Vue.use(JsonViewer)
 
 Vue.config.productionTip = false
-
+// 全局图片上传地址
+Vue.mixin({
+  computed: {
+    uploadUrl() {
+      return `${process.env.VUE_APP_BASE_API}/admin-api/file/uploadOss`
+    }
+  }
+})
 new Vue({
   el: '#app',
   router,

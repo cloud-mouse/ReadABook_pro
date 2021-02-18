@@ -8,7 +8,15 @@ catchtap="showSetting">
     </view>
     <template is="wxParse" data="{{wxParseData:article.nodes}}" />
   </view>
+  <!-- 章节分页 -->
+  <view class="tips">到底啦~</view>
+  <view class="pagination">
+    <view catchtap="pre" wx:if="{{chapterDetail.chapter_index>0}}">上一章</view>
+    <view catchtap="next">下一章</view>
+  </view>
 </view>
+
+<!-- 阅读设置 -->
 <van-popup
   show="{{ show }}"
   position="bottom"

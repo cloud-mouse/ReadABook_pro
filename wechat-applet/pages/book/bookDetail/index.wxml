@@ -9,9 +9,9 @@
   </view>
   <view class="chapter-content">
     <view class="chapter-header">
-
+      章节列表
     </view>
-    <view class="chapter-list">
+    <view class="chapter-list" wx:if="{{chapterList.length>0}}">
       <view class="chapter-item" wx:for="{{chapterList}}" wx:key="_id"
         data-id="{{item._id}}"
       >
@@ -19,9 +19,13 @@
           is-link
           title="{{item.chapter_name}}"
           link-type="navigateTo"
-          url="/pages/book/chapterDetail/index?id={{item._id}}"
+          url="/pages/book/chapterDetail/index?id={{item._id}}&library_id={{library_id}}"
         />
       </view>
+    </view>
+    <view class="no-data" wx:else>
+      <image src="../../../assets/images/no-book.png"></image>
+      <text>暂无章节~</text>
     </view>
   </view>
 

@@ -17,7 +17,7 @@ router.get('/', async (req, res, next) => {
       })
     }else {
       res.send({
-        code: 200,
+        code: 400,
         msg: '获取失败',
         data: chapter
       })
@@ -34,6 +34,24 @@ router.get('/', async (req, res, next) => {
         pageSize: pageSize,
         count: count
       }
+    })
+  }
+})
+
+//小说章节 翻页
+router.get('/turnPage', async (req, res, next) => {
+  let { library_id, page } = req.query
+  const chapter = await Chapter.findOne({libraryId: library_id, chapter_index: page})
+  if(chapter){
+    res.send({
+      code: 200,
+      msg: '获取成功',
+      data: chapter
+    })
+  }else {
+    res.send({
+      code: 400,
+      msg: '没有了~',
     })
   }
 })

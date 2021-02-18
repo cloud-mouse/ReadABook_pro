@@ -10,6 +10,7 @@ var url = {
   bookList: '/library', // 书本列表
   // 章节
   chapterList: '/chapter', // 章节列表
+  chapterTurnPage: '/chapter/turnPage', // 章节翻页
 }
 module.exports = {
   // 用户登录
@@ -59,6 +60,13 @@ module.exports = {
   get_chapter(params) {
     return http({
       url: url.chapterList,
+      data: params
+    })
+  },
+  // 章节翻页
+  chapter_turn_page(params) {
+    return http({
+      url: url.chapterTurnPage,
       data: params
     })
   },

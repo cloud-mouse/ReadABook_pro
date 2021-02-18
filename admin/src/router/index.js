@@ -102,7 +102,7 @@ export const constantRoutes = [
       path: 'userList',
       name: 'UsersList',
       component: () => import('@/views/setting/userList'),
-      meta: { title: '用户管理' }
+      meta: { title: '管理员列表' }
     }]
   },
   // 404 page must be placed at the end !!!

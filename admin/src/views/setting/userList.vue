@@ -30,7 +30,7 @@
           type="index"
         />
         <el-table-column
-          label="用户头像/姓名"
+          label="头像"
           align="center"
         >
           <template slot-scope="scope">
@@ -103,13 +103,23 @@
       </div>
     </div>
     <!-- 管理者新增，详情，编辑弹框 -->
-    <el-dialog center :title="dialogType=='add'? '新增用户': dialogType=='edit'? '编辑用户': '用户详情'" :visible.sync="dialogFormVisible" width="40%">
+    <el-dialog center :title="dialogType=='add'? '新增管理员': dialogType=='edit'? '编辑管理员': '管理员详情'" :visible.sync="dialogFormVisible" width="40%">
       <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="right" size="small">
-        <el-form-item label="头像" prop="avator">
-          <el-input v-model="form.avator" placeholder="请输入头像url" style="width:100%" />
+        <el-form-item label="管理员头像" prop="avator">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadUrl"
+            :headers="{'Authorization': `Basic ${token}`}"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="form.avator" :src="form.avator" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
         </el-form-item>
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="请输入用户名" style="width:100%" />
+        <el-form-item label="管理员账号" prop="username">
+          <el-input v-model="form.username" placeholder="请输入管理员账号" style="width:100%" />
         </el-form-item>
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入手机号" style="width:100%" />
@@ -120,23 +130,6 @@
         <el-form-item v-if="dialogType==='add'" label="密码" prop="password">
           <el-input v-model="form.password" placeholder="请输入密码" type="password" style="width:100%" />
         </el-form-item>
-        <!-- <el-form-item label="用户头像" prop="avator">
-          <el-upload
-            class="logo-uploader"
-            :action="`${baseUrl}/design/uploadImg`"
-            name="image"
-            :headers="{'design_sign': token}"
-            :file-list="fileList"
-            :with-credentials="true"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            :disabled="dialogType=='detail'"
-          >
-            <img v-if="imageUrl" :src="imageUrl" class="logo">
-            <i v-else class="el-icon-plus logo-uploader-icon" />
-          </el-upload>
-        </el-form-item> -->
         <el-form-item>
           <el-button v-if="dialogType!=='detail'" type="primary" @click="onSubmit('form')">保存</el-button>
           <el-button @click="dialogFormVisible = false">关闭</el-button>
@@ -200,7 +193,7 @@ export default {
       total: 0,
       rules: {
         username: [
-          { required: true, message: '请填写用户姓名', trigger: 'blur' }
+          { required: true, message: '请填写管理员姓名', trigger: 'blur' }
         ],
         realname: [
           { required: true, message: '请填写真实姓名', trigger: 'blur' }
@@ -249,6 +242,27 @@ export default {
         this.total = res.data.count
       })
     },
+    // 上传图片
+    handleAvatarSuccess(res, file) {
+      if (res.code === 1) {
+        this.form.avator = res.path
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传图片只能是 JPG/PNG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     showDialog(type, form) {
       this.dialogType = type
       this.dialogFormVisible = true
@@ -290,22 +304,6 @@ export default {
         }
       })
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-      this.form.avator = res.data
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
     handleCurrentChange(val) {
       this.currentPage = val
       this.fetchData()
@@ -315,7 +313,7 @@ export default {
       this.fetchData()
     },
     handleDelete(id) {
-      this.$confirm('是否删除该用户账号?', '提示', {
+      this.$confirm('是否删除该账号?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -350,32 +348,6 @@ export default {
 </style>
 
 <style lang="scss">
-.logo-uploader{
-  .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .logo-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 150px;
-    height: 150px;
-    line-height: 150px;
-    text-align: center;
-  }
-  .logo {
-    width: 150px;
-    height: 150px;
-    display: block;
-  }
-}
-
 .changes-status.el-switch.is-disabled {
   opacity: 1;
   .el-switch__core {

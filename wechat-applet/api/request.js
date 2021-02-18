@@ -6,6 +6,9 @@ const apiUrl = "http://192.168.3.168:3000/wx-api"; //服务器api地址
 const http = (params) => {
   //返回promise 对象
   return new Promise((resolve, reject) => {
+    wx.showLoading({
+      title: '加载中...',
+    })
     wx.request({
       url: apiUrl + params.url, //服务器url+参数中携带的接口具体地址
       data: params.data, //请求参数
@@ -16,6 +19,7 @@ const http = (params) => {
       dataType: params.dataType, //返回的数据格式,默认为JSON，特殊格式可以在调用的时候传入参数
       responseType: params.responseType, //响应的数据类型
       success: (res)=> {
+        wx.hideLoading()
         //接口访问正常返回数据
         if (res.statusCode == 200) {
           //1. 操作成功返回数据,原则上只针对服务器端返回成功的状态（如本例中为000000）
@@ -87,6 +91,7 @@ const http = (params) => {
         }
       },
       fail: function(e) {
+        wx.hideLoading()
         reject(e)
       }
     })

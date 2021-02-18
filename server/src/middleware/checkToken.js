@@ -6,6 +6,13 @@ const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../../config/index')
 // 验证token
 let checkToken = async (req, res, next)=>{
+  if(!req.headers.authorization) {
+    res.send({
+      code: 401,
+      msg: '尚未登录！'
+    })
+    return
+  }
   const token = String(req.headers.authorization.split(' ').pop())
   if(!token){
     res.send({

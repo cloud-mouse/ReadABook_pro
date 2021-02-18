@@ -90,17 +90,18 @@
           <el-input v-model="form.class_name" />
         </el-form-item>
         <el-form-item label="分类图标" prop="icon">
-          <el-input v-model="form.icon" clearable="" />
-          <!-- <el-upload
+          <!-- <el-input v-model="form.icon" clearable="" /> -->
+          <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :action="uploadUrl"
+            :headers="{'Authorization': `Basic ${token}`}"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
             <img v-if="form.icon" :src="form.icon" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </el-upload> -->
+          </el-upload>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit('figureForm')">保存</el-button>
@@ -115,6 +116,7 @@
 <script>
 import { libraryClassApi } from '@/api/library'
 import { formatTime } from '@/utils'
+import { getToken } from '@/utils/auth'
 export default {
   filters: {
     timeFormat(time) {
@@ -123,13 +125,14 @@ export default {
   },
   data() {
     return {
+      token: getToken(),
       loading: true,
       users_id: '',
       classList: [], // 分类列表
       dialogFormVisible: false, // 新增花样弹窗
       form: {
         class_name: '',
-        icon: 'https://s3.ax1x.com/2021/02/02/yuwGjS.jpg'
+        icon: ''
       }, // 上传花样form
       editForm: {},
       pageSize: 10,
@@ -151,7 +154,7 @@ export default {
       if (val === false) {
         this.form = {
           class_name: '',
-          icon: 'https://s3.ax1x.com/2021/02/02/yuwGjS.jpg'
+          icon: ''
         }
       }
     }
@@ -234,7 +237,12 @@ export default {
     },
     // 上传图片
     handleAvatarSuccess(res, file) {
-      this.form.icon = URL.createObjectURL(file.raw)
+      if (res.code === 1) {
+        this.form.icon = res.path
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -361,27 +369,4 @@ export default {
     }
   }
 }
-.avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
 </style>

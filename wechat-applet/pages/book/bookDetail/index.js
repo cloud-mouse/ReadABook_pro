@@ -20,6 +20,9 @@ Page({
    */
   onLoad: function (options) {
     this.getBookList(options.id)
+    this.setData({
+      library_id: options.id
+    })
     this.getChapter(options.id)
   },
 

@@ -1,2 +1,5 @@
-<!--pages/user/index.wxml-->
-<text>pages/user/index.wxml</text>
+<view class="user">
+  <view class="user-info">
+    开发中，给点时间吧...
+  </view>
+</view>

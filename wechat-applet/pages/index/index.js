@@ -9,7 +9,6 @@ Page({
   data: {
     active: 0,
     classList: [],
-    bookList: [],
     currentClassId: '',
     page: 1,
     pageSize: 10
@@ -29,7 +28,10 @@ Page({
     
   },
   onChange(e) {
-    console.log(e)
+    this.getBookList(e.detail.name)
+    this.setData({
+      currentClassId: e.detail.name
+    })
   },
   // 获取分类
   getClass() {
@@ -53,6 +55,7 @@ Page({
       })
     })
   },
+  // 查看书本详情
   toBookDetail(e) {
     console.log(e);
     let id = e.currentTarget.dataset.id
@@ -86,6 +89,14 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
+    wx.showNavigationBarLoading() //在标题栏中显示加载
+    
+    this.setData({
+      currentPage: 1
+    })
+    this.getBookList(this.data.currentClassId)
+    wx.hideNavigationBarLoading() //完成停止加载
+    wx.stopPullDownRefresh() //停止下拉刷新       
   },
 
   /**

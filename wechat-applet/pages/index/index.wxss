@@ -1,6 +1,8 @@
+page{
+  background: #fff;
+}
 .book-list{
   padding: 20rpx;
-
 }
 .book-item{
   background: #fff;
@@ -9,6 +11,7 @@
   padding: 20rpx;
   display: flex;
   justify-content: space-between;
+  box-shadow: 0px 0px 10rpx 5rpx #ebebeb;
 }
 .book-item image{
   width: 200rpx;
