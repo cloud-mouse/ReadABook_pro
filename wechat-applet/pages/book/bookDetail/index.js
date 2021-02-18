@@ -47,6 +47,9 @@ Page({
   },
 
   getChapter(id) {
+    wx.showLoading({
+      title: '章节加载中...',
+    })
     get_chapter({
       library_id: id,
       pageSize: this.data.pageSize,
@@ -56,6 +59,7 @@ Page({
         chapterList: res.data.list,
         total: res.data.count
       })
+      wx.hideLoading()
     })
   },
   /**

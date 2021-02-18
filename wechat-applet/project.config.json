@@ -23,7 +23,7 @@
     "compileHotReLoad": false,
     "useMultiFrameRuntime": true,
     "useApiHook": true,
-    "useApiHostProcess": false,
+    "useApiHostProcess": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -41,7 +41,7 @@
   },
   "compileType": "miniprogram",
   "libVersion": "2.9.4",
-  "appid": "wx84963d0ed675e7d0",
+  "appid": "wx3ab68d7c6b6db1ed",
   "projectname": "Read%20A%20Book",
   "debugOptions": {
     "hidedInDevtools": []

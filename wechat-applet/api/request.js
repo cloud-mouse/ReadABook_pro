@@ -1,7 +1,7 @@
 /**
  * 封装http 请求方法
  */
-const apiUrl = "http://192.168.3.168:3000/wx-api"; //服务器api地址
+// const apiUrl = "http://192.168.3.168:3000/wx-api"; //服务器api地址
 
 const http = (params) => {
   //返回promise 对象

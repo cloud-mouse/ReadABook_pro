@@ -177,7 +177,17 @@
         size="small"
       >
         <el-form-item label="封面" prop="cover">
-          <el-input v-model="form.cover" />
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadUrl"
+            :headers="{'Authorization': `Basic ${token}`}"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="form.cover" :src="form.cover" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
         </el-form-item>
         <el-form-item label="书本名称" prop="name">
           <el-input v-model="form.name" />
@@ -219,7 +229,7 @@
 import { libraryApi, libraryClassApi } from '@/api/library'
 import { chapterApi } from '@/api/chapter'
 import { formatTime } from '@/utils'
-
+import { getToken } from '@/utils/auth'
 export default {
   filters: {
     timeFormat(time) {
@@ -236,7 +246,7 @@ export default {
   },
   data() {
     return {
-
+      token: getToken(),
       loading: true,
       keywords: '',
       classId: '',
@@ -347,7 +357,27 @@ export default {
         })
       })
     },
+    // 上传图片
+    handleAvatarSuccess(res, file) {
+      if (res.code === 1) {
+        this.form.cover = res.path
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
+      if (!isJPG) {
+        this.$message.error('上传图片只能是 JPG/PNG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
