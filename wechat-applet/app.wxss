@@ -1,0 +1,17 @@
+/* 引入colorui的css */
+@import "./componet/colorUi/icon.wxss";
+@import "./componet/colorUi//main.wxss";
+
+.no-data{
+  text-align: center;
+  padding: 100rpx 0;
+  color: #8a8a8a;
+}
+.no-data image{
+  width: 160rpx;
+  height: 160rpx;
+}
+.no-data text{
+  display: block;
+  margin-top: 40rpx;
+}

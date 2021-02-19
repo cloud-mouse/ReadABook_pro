@@ -1,0 +1,9 @@
+{
+  
+  "usingComponents": {
+    "van-slider": "@vant/weapp/slider/index",
+    "van-popup": "@vant/weapp/popup/index"
+  },
+  "navigationBarTitleText": "详情",
+  "enablePullDownRefresh": true
+}

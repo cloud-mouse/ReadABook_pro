@@ -1,0 +1,45 @@
+page{
+  background: #fff;
+}
+.book-list{
+  padding: 20rpx;
+}
+.book-item{
+  background: #fff;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0px 0px 10rpx 5rpx #ebebeb;
+}
+.book-item image{
+  width: 200rpx;
+  height: 240rpx;
+}
+.book-info{
+  width: 480rpx;
+  padding-left: 20rpx;
+}
+.book-name{
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+.book-author{
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 400;
+  padding: 15rpx 0;
+}
+.book-desc{
+  font-size: 24rpx;
+  color: #999;
+  text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  align-content: center;
+}
