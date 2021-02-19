@@ -1,9 +1,0 @@
-{
-  
-  "usingComponents": {
-    "van-popup": "@vant/weapp/popup/index",
-    "van-cell": "@vant/weapp/cell/index"
-  },
-  "navigationBarTitleText": "详情",
-  "enablePullDownRefresh": true
-}

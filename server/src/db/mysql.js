@@ -1,1 +1,0 @@
-const MYSQL_CONFIG = require('../../config/index')
