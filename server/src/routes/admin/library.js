@@ -3,7 +3,7 @@ var router = express.Router();
 const Library = require('../../model/Library')
 const Chapter = require('../../model/Chapter')
 const checkToken = require('../../middleware/checkToken')
-var {upload_file} = require('../../middleware/common')
+var { upload_file } = require('../../middleware/common')
 
 // 获取书本列表
 router.get('/', checkToken, async(req, res, next)=>{
@@ -98,7 +98,7 @@ router.patch('/', checkToken, async (req, res, next) => {
   let updateTime = new Date()
   data.updateTime =  updateTime
   try {
-     await Library.findByIdAndUpdate(data._id, data) 
+    await Library.findByIdAndUpdate(data._id, data) 
   } catch (error) {
     res.send({
       code: error.code,
@@ -127,7 +127,48 @@ router.post('/', checkToken, async(req, res, next)=>{
   res.send({
     code: 200,
     msg: '新增成功',
+    data: result
   })
 })
+
+// 导入图书
+router.post('/import-book', checkToken, upload_file, async(req, res, next)=>{
+  let {data} = req.result
+  let chapter = data.chapter
+  let book = await Library.findOne({name: data.name})
+  try {
+    if(book){
+      await Library.findByIdAndUpdate(book._id, data)
+      await insertChapter(book._id, chapter)
+    }else {
+      let result = await Library.create(data)
+      await insertChapter(result._id, chapter)
+    }
+    res.send({
+      code: 200,
+      msg: '导入成功'
+    })
+  } catch (error) {
+    res.send({
+      code: 400,
+      msg: error
+    })
+  }
+  
+})
+
+// 插入章节方法
+let insertChapter = async(libraryId, chapters)=>{
+  for (var i = 0, len = chapters.length; i < len; i++) {
+    let chapter = await Chapter.find({chapter_name: chapters[i].chapter_name, libraryId: libraryId});
+    if (chapter._id){
+      chapters[i].libraryId = libraryId
+      await Chapter.findByIdAndUpdate(chapter._id, chapters[i])
+    }else {
+      chapters[i].libraryId = libraryId
+      await Chapter.create(chapters[i])
+    }
+  }
+}
 
 module.exports = router;

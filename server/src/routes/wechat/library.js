@@ -16,13 +16,15 @@ router.get('/', async(req, res, next)=>{
     const data = await Library.findById(id).populate('classId')
     // 查询章节列表 去掉content字段
     const chapterList = await Chapter.find({libraryId: id}, { content: 0 }).sort({"chapter_index": 1}).skip((currentPage - 1) * pageSize).limit(pageSize * 1)  // 分页查询
+    const count = await Chapter.countDocuments({libraryId: id})
     if(data){
       res.send({
         code: 200,
         msg: '获取成功',
         data: {
           bookInfo: data,
-          chapterList: chapterList
+          chapterList: chapterList,
+          chapterCount: count
         }
       })
     }else {
@@ -34,7 +36,8 @@ router.get('/', async(req, res, next)=>{
   }else {
     // 查询书本列表
     const list = await Library.find({
-      classId: class_id
+      classId: class_id,
+      status: 1,
     }).populate('classId')
     const count = await Library.countDocuments(query)  // 计数
     res.send({

@@ -128,7 +128,6 @@ export default {
       showContent: false,
       showFileDialog: false,
       showGeshi: false,
-      uplaodUrl: 'http://localhost:3000/admin-api/chapter/imporChapter?id=' + this.$route.query.id,
       fileList: [],
       token: getToken(),
       form: {
@@ -167,7 +166,7 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
-    // 花样文件选择
+    // 文件选择
     fileChange(file, fileList) {
       const isJson = file.raw.type === 'application/json'
       if (!isJson) {

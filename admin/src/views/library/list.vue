@@ -21,6 +21,7 @@
       </div>
       <div class="operation">
         <el-button size="small" icon="el-icon-plus" type="primary" @click="showDialog('add')">新增</el-button>
+        <el-button size="small" icon="el-icon-document-add" @click="showFileDialog = true">导入</el-button>
       </div>
     </div>
     <div class="content">
@@ -114,11 +115,11 @@
               size="mini"
               @click.native="seeDetail(scope.row)"
             >查看</el-button>
-            <el-button
+            <!-- <el-button
               type="text"
               size="mini"
               @click.native="removeChapter(scope.row)"
-            >清空</el-button>
+            >清空</el-button> -->
           </template>
         </el-table-column>
         <el-table-column
@@ -222,6 +223,45 @@
       </el-form>
     </el-dialog>
 
+    <!-- 文件导入弹窗 -->
+    <el-dialog
+      title="文件导入"
+      :visible.sync="showFileDialog"
+      width="30%"
+      @close="showFileDialog = false"
+    >
+      <div class="import-form">
+        <el-form
+          ref="bookForm"
+          :model="bookForm"
+          label-position="top"
+          size="small"
+        >
+          <el-form-item label="选择小说文件">
+            <el-upload
+              ref="upload"
+              name="design"
+              class="upload-demo"
+              action
+              :on-remove="handleRemove"
+              :on-change="fileChange"
+              multiple
+              :auto-upload="false"
+              :with-credentials="true"
+              :limit="1"
+            >
+              <el-button slot="trigger" size="small" type="primary">选择文件</el-button>
+            </el-upload>
+          </el-form-item>
+
+        </el-form>
+        <span slot="footer">
+          <el-button type="primary" @click="importBook('bookForm')">保存</el-button>
+          <el-button @click="showFileDialog = false">取消</el-button>
+        </span>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -256,6 +296,7 @@ export default {
       pageSize: 14,
       currentPage: 1,
       total: 0,
+      showFileDialog: false, // 导入弹窗
       dialogFormVisible: false, // 新增弹窗
       form: {
         name: '',
@@ -266,6 +307,9 @@ export default {
         description: '',
         classId: '',
         status: 1
+      },
+      bookForm: {
+        book: {}
       },
       rules: {
         name: [
@@ -310,7 +354,7 @@ export default {
   },
   methods: {
     fetchData() {
-      // 获取花样列表
+      // 获取列表
       libraryApi.get_library({
         currentPage: this.currentPage,
         pageSize: this.pageSize,
@@ -339,6 +383,68 @@ export default {
       this.dialogType = type
       this.dialogFormVisible = true
       form ? this.form = JSON.parse(JSON.stringify(form)) : ''
+      form ? this.form.classId = JSON.parse(JSON.stringify(form.classId._id)) : ''
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+      this.bookForm = {
+        book: {}
+      }
+    },
+    // 文件选择
+    fileChange(file, fileList) {
+      const isJson = file.raw.type === 'application/json'
+      if (!isJson) {
+        this.$message.error('上传文件只能是 Json 格式!')
+        fileList.pop()
+        return false
+      }
+      const existFile = this.bookForm.book.name === file.name
+      if (existFile) {
+        this.$message.error('当前文件已经存在!')
+        fileList.pop()
+        return false
+      }
+      this.bookForm.book = file
+    },
+    // 导入文件
+    importBook(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const formData = new FormData()
+          formData.append('file', this.bookForm.book.raw, this.bookForm.book.raw.name)
+          const loading = this.$loading({
+            lock: true,
+            text: '文件上传中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(255,255, 255, 0.5)'
+          })
+          console.log(formData)
+          libraryApi.importBook(formData).then(res => {
+            if (res.code !== 200) {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            } else {
+              this.$message({
+                message: '导入成功',
+                type: 'success'
+              })
+              loading.close()
+              this.fetchData()
+              this.showFileDialog = false
+              this.bookForm = {
+                book: {}
+              }
+            }
+          }).catch(() => {
+            loading.close()
+          })
+        } else {
+          return false
+        }
+      })
     },
     removeChapter(row) {
       this.$confirm(`此操作将清空${row.name}的全部章节，是否确认清楚?`, '提示', {

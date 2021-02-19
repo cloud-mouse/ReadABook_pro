@@ -73,5 +73,15 @@ export const libraryApi = {
       method: 'patch',
       data
     })
+  },
+  importBook(data) {
+    return request({
+      url: '/admin-api/library/import-book',
+      method: 'post',
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }
