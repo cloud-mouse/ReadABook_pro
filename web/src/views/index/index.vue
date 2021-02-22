@@ -22,14 +22,25 @@
     </div> -->
     <!-- 热销商品 -->
     <van-tabs v-model="active" animated>
-      <van-tab v-for="item in indexData" :key="item._id" :title="item.class_name">
+      <van-tab
+        v-for="item in indexData"
+        :key="item._id"
+        :title="item.class_name"
+      >
         <div v-if="item.bookList && item.bookList.length" class="book-list">
-          <div v-for="book in item.bookList" :key="book._id" class="book-item" @click="toDetail(book._id)">
+          <div
+            v-for="book in item.bookList"
+            :key="book._id"
+            class="book-item"
+            @click="toDetail(book._id)"
+          >
             <img :src="book.cover" alt="">
             <div class="book-info">
-              <div class="book-name">{{book.name}}</div>
-              <div class="book-author">{{book.author}}</div>
-              <div class="book-desc">{{book.description}}</div>
+              <div class="book-name">{{ book.name }}</div>
+              <div class="book-author">{{ book.author }}</div>
+              <div class="book-desc">
+                <span>{{ book.description }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -66,20 +77,21 @@ export default {
         this.indexData = res.data
       })
     },
+    // 查看小说详情
+    toDetail(id) {
+      console.log(id)
+    },
     toSearch() {
       this.$router.push({ path: `/bookList` })
     },
-    linkJump(url) {
-    }
+    linkJump(url) {}
   }
 }
 </script>
 <style lang="scss" scoped>
-.index-view{
-  background: #f5f5f5;
-  padding-bottom: 50px;
-  .index-banner{
-    .my-swipe{
+.index-view {
+  .index-banner {
+    .my-swipe {
       background: #f7f7f7;
       height: 220px;
       .van-swipe-item {
@@ -88,17 +100,17 @@ export default {
         line-height: 10px;
         text-align: center;
         height: 220px;
-        img{
+        img {
           width: 100%;
           height: 220px;
         }
       }
     }
   }
-  .book-list{
+  .book-list {
     background: #fff;
     padding: 10px;
-    .book-item{
+    .book-item {
       padding: 10px;
       box-shadow: 0 0 10px 5px #f5f5f5;
       border-radius: 8px;
@@ -106,21 +118,22 @@ export default {
       display: flex;
       justify-content: space-between;
       font-size: 14px;
-      img{
+      img {
         width: 100px;
         height: 140px;
       }
-      .book-info{
+      .book-info {
         padding-left: 15px;
-        .book-name{
+        width: 230px;
+        .book-name {
           font-size: 18px;
           padding-bottom: 5px;
         }
-        .book-author{
+        .book-author {
           color: #666;
           padding: 5px 0;
         }
-        .book-desc{
+        .book-desc {
           color: #666;
         }
       }
